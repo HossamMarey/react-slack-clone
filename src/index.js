@@ -27,22 +27,43 @@ import { Loader, Dimmer } from "semantic-ui-react";
 
 class Root extends Component {
   componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        this.props.setUser(user);
+        await this.getCurrentUser(user.uid);
+        // this.props.setUser(user);
         this.props.history.push("/");
       } else {
-        this.props.clearUser()
         this.props.history.push("/login");
+        this.props.clearUser();
         // clear user
       }
     });
   }
+  getCurrentUser = async (id) => {
+    await firebase
+      .firestore()
+      .collection("users")
+      .where("uid", "==", id)
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          // return doc.data();
+          this.props.setUser(doc.data());
+        });
+      });
+  };
 
   render() {
     return this.props.isLoading ? (
       <Dimmer active>
-      <Loader active inline="centered" className="mt-50vh" size="huge" content="loading chat ..." /> </Dimmer>
+        <Loader
+          active
+          inline="centered"
+          className="mt-50vh"
+          size="huge"
+          content="loading chat ..."
+        />{" "}
+      </Dimmer>
     ) : (
       <Switch>
         <Route path="/" exact component={App} />
@@ -57,7 +78,9 @@ const mapStateToProps = (state) => ({
   isLoading: state.user.isLoading,
 });
 
-const RootWithAuth = withRouter(connect(mapStateToProps, { setUser, clearUser })(Root));
+const RootWithAuth = withRouter(
+  connect(mapStateToProps, { setUser, clearUser })(Root)
+);
 
 ReactDOM.render(
   <Provider store={createStore(rootReducer, composeWithDevTools())}>

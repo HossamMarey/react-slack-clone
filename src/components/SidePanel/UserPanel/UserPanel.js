@@ -1,16 +1,26 @@
 import React, { Component } from "react";
+// import { connect } from "react-redux";
+
 import firebase from "../../firebase";
 
-import { Grid, Header, Icon, Dropdown } from "semantic-ui-react";
+import { Grid, Header, Icon, Dropdown, Image } from "semantic-ui-react";
 
-export default class UserPanel extends Component {
+class UserPanel extends Component {
+  state = {
+    user: this.props.currentUser,
+  };
+  componentDidMount() {
+    // console.log(this.props.currentUser);
+    // this.setState({user: this.props.currentUser})
+  }
+
   dropdownOptions = () => [
     {
       key: "user",
       text: (
         <span>
           {" "}
-          Signed In as <strong>USER</strong>{" "}
+          Signed In as <strong>{this.state.user.name}</strong>{" "}
         </span>
       ),
       disabled: true,
@@ -28,12 +38,12 @@ export default class UserPanel extends Component {
     firebase
       .auth()
       .signOut()
-      .then(() => {
-        
-      })
+      .then(() => {})
       .catch((err) => console.log(err));
   };
+
   render() {
+    const { user } = this.state;
     return (
       <Grid style={{ background: "#4c3c4c" }}>
         <Grid.Column>
@@ -43,16 +53,28 @@ export default class UserPanel extends Component {
               <Icon name="code" />
               <Header.Content>HossChat</Header.Content>
             </Header>
-          </Grid.Row>
           {/* user Dropdown   */}
           <Header style={{ padding: ".25em" }} as="h4" inverted>
             <Dropdown
-              trigger={<span>User</span>}
+              trigger={
+                <span>
+                  <Image src={user.avatar} spaced="right" avatar />
+                  {user.name}
+                </span>
+              }
               options={this.dropdownOptions()}
             />
           </Header>
+          </Grid.Row>
         </Grid.Column>
       </Grid>
     );
   }
 }
+
+// const mapStateToProps = (state) => ({
+//   currentUser: state.user.currentUser,
+// });
+
+export default UserPanel;
+// export default  connect(mapStateToProps)(UserPanel);

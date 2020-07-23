@@ -13,7 +13,7 @@ import {
   Icon,
 } from "semantic-ui-react";
 
-export default class Register extends Component {
+class Register extends Component {
   state = {
     username: "",
     email: "",
@@ -22,7 +22,7 @@ export default class Register extends Component {
     errors: [],
     loading: false,
   };
- 
+
   handleChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
@@ -66,7 +66,6 @@ export default class Register extends Component {
     }
   };
 
-
   displayErrors = (errors) =>
     errors.map((err, i) => <p key={i}>{err.message}</p>);
 
@@ -83,17 +82,19 @@ export default class Register extends Component {
         .auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then((createdUser) => {
-          
-
-          createdUser.user.updateProfile({
+          createdUser.user
+            .updateProfile({
               displayName: this.state.username,
-              photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`,
+              photoURL: `http://gravatar.com/avatar/${md5(
+                createdUser.user.email
+              )}?d=identicon`,
             })
             .then(() => {
               this.setState({ loading: false });
-              this.saveUser(createdUser).then(() => {
-                console.log("user saved")
-              })
+              this.saveUser(createdUser).then((user) => {
+                this.props.history.push("/");
+                window.location.reload(false);
+              });
             })
             .catch((err) => {
               console.log(err);
@@ -103,8 +104,6 @@ export default class Register extends Component {
                 loading: false,
               });
             });
-
-
         })
         .catch((err) => {
           console.log(err);
@@ -120,14 +119,25 @@ export default class Register extends Component {
   };
 
   saveUser = async (createdUser) => {
-   await firebase.firestore().collection("users").add({
-      name: createdUser.user.displayName,
-      avatar : createdUser.user.photoURL,
-      email: createdUser.user.email,
-      uid: createdUser.user.uid
-    }).then( dd => console.log(dd)).catch(err => console.log(err))
-    
-  }
+    await firebase
+      .firestore()
+      .collection("users")
+      .add({
+        name: createdUser.user.displayName,
+        avatar: createdUser.user.photoURL,
+        email: createdUser.user.email,
+        uid: createdUser.user.uid,
+        id: "",
+      })
+      .then((data) => {
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(data.id)
+          .update({ id: data.id });
+      })
+      .catch((err) => console.log(err));
+  };
 
   render() {
     const {
@@ -218,3 +228,5 @@ export default class Register extends Component {
     );
   }
 }
+
+export default Register;
