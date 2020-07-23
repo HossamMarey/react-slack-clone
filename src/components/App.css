@@ -1,0 +1,10 @@
+html,
+body,
+.App {
+  height: 100vh;
+  background-color: #eee;
+  padding: 1em;
+}
+.mt-50vh {
+  margin-top: 50vh;
+}
