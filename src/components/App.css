@@ -11,3 +11,32 @@ body {
 .mt-50vh {
   margin-top: 50vh;
 }
+
+.messages {
+  height: calc(100vh - 279px);
+  width: 100%;
+  overflow-y: scroll;
+  max-width: 100% !important;
+}
+.message__form {
+  position: fixed !important;
+  bottom: 1em;
+  margin-left: 320px !important;
+  left: 0;
+  right: 1em;
+  z-index: 200;
+}
+.message__self {
+  border-left: 2px solid orange;
+  padding-left: 8px;
+}
+.message__image {
+  margin: 0.5em;
+  height: 200px !important;
+  object-fit: cover !important;
+  background-color: rgb(196, 196, 196) !important;
+  cursor: pointer;
+}
+.menu {
+  padding-bottom: 1.5em;
+}
