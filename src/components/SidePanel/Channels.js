@@ -108,6 +108,9 @@ class Channels extends Component {
     this.props.setPrivateChannel(false);
     this.setState({ activeChannel: channel.id, channel: channel });
     this.clearNotifications();
+    setTimeout(() => {
+      this.clearNotifications();
+    }, 100);
   };
 
   isChannelActive = (channel) => {
@@ -136,6 +139,7 @@ class Channels extends Component {
     let index = this.state.notifications.findIndex((notification) => {
       return notification.id === this.state.channel.id;
     });
+
     if (index !== -1) {
       let updatedNotifications = [...this.state.notifications];
       updatedNotifications[index].total = this.state.notifications[
@@ -147,7 +151,7 @@ class Channels extends Component {
   };
   checkNotifications = (channel) => {
     let index = this.state.notifications.findIndex((notification) => {
-      return notification.id === this.state.channel.id;
+      return notification.id === channel.id;
     });
     let countNum = 0;
     if (index !== -1) {
@@ -156,7 +160,8 @@ class Channels extends Component {
     if (countNum > 0) {
       return (
         <Label color="red" size="mini">
-          2
+          {" "}
+          {countNum}{" "}
         </Label>
       );
     }
