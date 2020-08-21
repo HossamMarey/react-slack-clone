@@ -90,11 +90,33 @@ class Register extends Component {
               )}?d=identicon`,
             })
             .then(() => {
-              this.setState({ loading: false });
-              this.saveUser(createdUser).then((user) => {
-                this.props.history.push("/");
-                window.location.reload(false);
-              });
+              // this.saveUser(createdUser).then((user) => {
+              //   this.props.history.push("/");
+              //   window.location.reload(false);
+              // });
+              firebase
+                .firestore()
+                .collection("users")
+                .add({
+                  name: createdUser.user.displayName,
+                  avatar: createdUser.user.photoURL,
+                  email: createdUser.user.email,
+                  uid: createdUser.user.uid,
+                  id: "",
+                })
+                .then((data) => {
+                  firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(data.id)
+                    .update({ id: data.id })
+                    .then(() => {
+                      this.props.history.push("/");
+                      window.location.reload(false);
+                      this.setState({ loading: false });
+                    });
+                })
+                .catch((err) => console.log(err));
             })
             .catch((err) => {
               console.log(err);

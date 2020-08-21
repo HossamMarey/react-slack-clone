@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { Comment, Image, Modal, Button, Icon } from "semantic-ui-react";
 import moment from "moment";
+import firebase from "../firebase";
 
 export default class Message extends Component {
   state = {
     openImg: false,
+    user: this.props.message.data.user
   };
   isOnMessage = (user) => {
     return user.id === this.props.user.id ? "message__self" : "";
@@ -18,10 +20,36 @@ export default class Message extends Component {
   };
   // timeFromNow = (timestamp) => "date"
 
-  openImgModal = () => { this.setState({openImg: true})}
-  closeImgModal = () => { this.setState({openImg: false})}
+  componentDidMount() {
+    this.setMsgUser()
+ 
+  }
+  setMsgUser = () => {
+    let userId = this.props.message.data.user.id;
+    if (userId) {
+      firebase
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .get()
+        .then((doc) => {
+          if (doc) {
+            // console.log(doc.data());
+            this.setState({user: doc.data()})
+          }
+        });
+    }
+  };
+
+  openImgModal = () => {
+    this.setState({ openImg: true });
+  };
+  closeImgModal = () => {
+    this.setState({ openImg: false });
+  };
   render() {
-    const { content, timestamp, user, image } = this.props.message.data;
+    const { content, timestamp , image } = this.props.message.data;
+    const {user} = this.state
     return (
       <Comment>
         <Comment.Avatar src={user.avatar} />
@@ -49,7 +77,7 @@ export default class Message extends Component {
           size="small"
         >
           <Modal.Content>
-          <Image src={image} fluid />
+            <Image src={image} fluid />
           </Modal.Content>
           <Modal.Actions>
             <Button basic color="red" inverted onClick={this.closeImgModal}>
