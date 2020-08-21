@@ -9,7 +9,7 @@
     "mime-types": "^2.1.20",
     "moment": "^2.22.2",
     "react": "^16.4.1",
-    "react-avatar-editor": "^11.0.4",
+    "react-avatar-editor": "^11.0.10",
     "react-color": "^2.14.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",

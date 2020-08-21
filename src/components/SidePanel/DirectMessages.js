@@ -11,6 +11,7 @@ class DirectMessages extends Component {
     user: this.props.currentUser,
     users: [],
     channel: this.props.currentChannel,
+    activeId: null,
   };
 
   componentDidMount() {
@@ -19,6 +20,7 @@ class DirectMessages extends Component {
       // this.updateStatus(this.state.user.uid);
     }
   }
+
   addListeners = (currentUserId) => {
     let loadedUsers = [];
     firebase
@@ -56,6 +58,7 @@ class DirectMessages extends Component {
       id: channelId,
       name: user.name,
     };
+    this.setState({ activeId: channelId });
     this.props.setCurrentChannel(channelData);
     this.props.setPrivateChannel(true);
   };
@@ -66,18 +69,26 @@ class DirectMessages extends Component {
       : `${currentUserId}-${uid}`;
   };
 
-  isChannelActive = () => {
-    let chId = this.props.currentChannel.id;
+  isChannelActive = (user) => {
+    let chId = this.state.activeId;
+    let userId = user.uid;
     let id1;
     let id2;
-    if (chId.includes("-")) {
-      id1 = chId.split("-")[0];
-      id2 = chId.split("-")[1];
-      if (this.state.user.uid === id1 || this.state.user.uid === id2) {
-        return true;
-      } else {
-        return false;
+    if (!this.props.isPrivateChannel) {
+      return false;
+    }
+    if (chId) {
+      if (chId.includes("-")) {
+        id1 = chId.split("-")[0];
+        id2 = chId.split("-")[1];
       }
+    } else {
+      return false;
+    }
+    if (userId === id1 || userId === id2) {
+      return true;
+    } else {
+      return false;
     }
   };
   render() {
@@ -96,7 +107,7 @@ class DirectMessages extends Component {
               key={user.uid}
               onClick={() => this.changeChannel(user)}
               style={{ fontStyle: "italic", opacity: 0.7 }}
-              active={this.isChannelActive()}
+              active={this.isChannelActive(user)}
             >
               <span>
                 <Icon name="user" size="small" />{" "}
@@ -112,6 +123,7 @@ class DirectMessages extends Component {
 
 const mapStateToProps = (state) => ({
   currentChannel: state.channel.currentChannel,
+  isPrivateChannel: state.channel.isPrivateChannel,
 });
 
 export default connect(mapStateToProps, {

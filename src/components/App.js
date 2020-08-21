@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 
 import "./App.css";
 
-import ColorPanel from "./ColorPanel/ColorPanel";
+// import ColorPanel from "./ColorPanel/ColorPanel";
 import SidePanel from "./SidePanel/SidePanel";
 import Messages from "./Messages/Messages";
-import MetaPanel from "./MetaPanel/MetaPanel";
+// import MetaPanel from "./MetaPanel/MetaPanel";
 
 import { Grid } from "semantic-ui-react";
 
@@ -14,14 +14,14 @@ const App = (props) => {
    
   return (
     <Grid className="app" columns="equal" style={{ background: "#eee" }}>
-      <ColorPanel />
+      {/* <ColorPanel /> */}
       <SidePanel
         currentUser={props.currentUser}
         currentChannel={props.currentChannel}
         key={props.currentUser && props.currentUser.id}
       />
 
-      <Grid.Column style={{ marginLeft: 320 }}>
+      <Grid.Column style={{ marginLeft: 290 }}>
         <Messages
           currentChannel={props.currentChannel}
           currentUser={props.currentUser}
@@ -29,9 +29,9 @@ const App = (props) => {
           isPrivateChannel={props.isPrivateChannel}
         />
       </Grid.Column>
-      <Grid.Column width={4}>
+      {/* <Grid.Column width={0}>
         <MetaPanel />
-      </Grid.Column>
+      </Grid.Column> */}
     </Grid>
   );
 };
