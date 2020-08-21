@@ -87,7 +87,7 @@ class UserPanel extends Component {
   };
 
   uploadAvatar = () => {
-    const { userRef, previewImage, imgFile, metadata } = this.state;
+    const { userRef, imgFile, metadata } = this.state;
 
     let imgPath = `avatars/user-${userRef.uid}`;
     this.setState({ loadingImg: true });
