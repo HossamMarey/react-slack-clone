@@ -61,6 +61,8 @@ class Channels extends Component {
             channels.push(doc.data());
             this.addNotificationsListener(doc.data().id);
           });
+        } else {
+          return
         }
       });
     this.setState({ channels }, () => {
@@ -73,6 +75,8 @@ class Channels extends Component {
     if (this.state.firstLoad && this.state.channels.length > 0) {
       this.props.setCurrentChannel(firstChannel);
       this.clearNotifications();
+    } else {
+      return
     }
     this.setState({
       firstLoad: false,

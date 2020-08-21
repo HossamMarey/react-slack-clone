@@ -5,7 +5,7 @@ import Message from "./Message";
 
 import firebase from "../firebase";
 
-import { Segment, Comment } from "semantic-ui-react";
+import { Segment, Comment, Card } from "semantic-ui-react";
 
 export default class Messages extends Component {
   state = {
@@ -117,18 +117,19 @@ export default class Messages extends Component {
       searchLoading,
       searchTerm,
       searchResults,
+      channel
     } = this.state;
 
     return (
       <React.Fragment>
-        <MessagesHeader
+        {channel &&  <MessagesHeader
           currentChannel={this.props.currentChannel}
           handleSearchChange={this.handleSearchChange}
           searchLoading={searchLoading}
           uniqUsersNum={messages.length > 0 ? this.getUniqueUsers(messages) : 0}
           isPrivateChannel={this.props.isPrivateChannel}
-        />
-        <Segment>
+        /> }
+        {channel && <Segment>
           <Comment.Group className="messages">
             {searchTerm
               ? this.displayMessages(searchResults)
@@ -141,14 +142,34 @@ export default class Messages extends Component {
               }}
             ></div>
           </Comment.Group>
-        </Segment>
-        <MessageForm
+        </Segment> }
+        {channel && <MessageForm
           messagesRef={messagesRef}
           currentChannel={this.props.currentChannel}
           currentUser={this.props.currentUser}
           isPrivateChannel={this.props.isPrivateChannel}
           getMessagesRef={this.getMessagesRef}
-        />
+        />  }
+        {channel && <MessageForm
+          messagesRef={messagesRef}
+          currentChannel={this.props.currentChannel}
+          currentUser={this.props.currentUser}
+          isPrivateChannel={this.props.isPrivateChannel}
+          getMessagesRef={this.getMessagesRef}
+        />  }
+
+        {!channel && 
+        <Card style={{width: '100%'}}>
+        <Card.Content>
+          <Card.Header>No Channels yet</Card.Header>
+ 
+          <Card.Description>
+            add new channel and start connecting
+          </Card.Description>
+        </Card.Content>
+      </Card>
+       }
+
       </React.Fragment>
     );
   }
